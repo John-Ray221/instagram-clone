@@ -28,6 +28,13 @@
 
 
     <div class="App">
+
+    <div class="new-post">
+
+      <input type="file" id="files" multiple /><br /><br />
+      <button id="send">Upload</button>
+
+    </div>
     <div class="main-container">
       <div class="navbar">
         <div class="navbar-inner">
@@ -120,7 +127,7 @@
                   src="assets/akhil.png"
                 />
               </div>
-              <button class="logout-btn" onclick="logout()">Logout</button>
+              <button class="logout-btn">Logout</button>
             </div>
           </div>
         </div>
@@ -1107,6 +1114,7 @@
 
 
       <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-app-compat.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-storage.js"></script>
       <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-firestore-compat.js"></script>
       <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-auth-compat.js"></script>
       <script src="app.js" ></script>
