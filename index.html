@@ -33,7 +33,11 @@
 
       <input type="file" id="files" multiple /><br /><br />
       <button id="send">Upload</button>
+      <button id="post">post</button>
 
+      <div id="progress"></div>
+      <div id="uploading"></div>
+      <img id="uploaded-img" scr="" />
     </div>
     <div class="main-container">
       <div class="navbar">
@@ -1114,8 +1118,8 @@
 
 
       <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-app-compat.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-storage.js"></script>
       <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-firestore-compat.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-storage-compat.js"></script>
       <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-auth-compat.js"></script>
       <script src="app.js" ></script>
   </body>
