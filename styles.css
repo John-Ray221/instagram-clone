@@ -8,6 +8,11 @@
     --color-border: #dbdbdb;
 }
 
+.new-post{
+    display: none;
+
+}
+
 .main-container {
     height: 100vh;
     margin: 0;
