@@ -80,7 +80,7 @@
     flex-direction:column;
     justify-content: flex-start;
     align-items: center;
-    height:348px;
+    height:auto;
     border-radius: 0px 0px 10px 10px;
 }
 .post-header{
@@ -102,12 +102,16 @@
     border:none;
   }
 
-#post-btn{
+#post-btn, #update-btn{
     width:80%;
     height:30px;
     background: #0095f6;
     color:white;
     border:none;
+    margin-bottom:15px;
+}
+#update-btn{
+    display:none
 }
 
 .main-container {

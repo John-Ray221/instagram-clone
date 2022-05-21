@@ -18,6 +18,7 @@ class App{
           this.postData = {
                postID : "",
                displayName : "",
+               imgFile : "",
                userUID : "",
                caption: "This is a caption",
                likes: 7
@@ -31,7 +32,6 @@ class App{
           this.firebaseUI = document.querySelector('#firebaseui-auth-container');
           this.appUI = document.querySelector('.App');
           this.ui = new firebaseui.auth.AuthUI(firebase.auth());
-          this.Imgfile = [];
           this.loadedPosts = [];
 
           //Methods to run when initializing an object
@@ -98,21 +98,35 @@ class App{
 
           document.querySelector('#files').addEventListener("change",(e)=>{
 
-               this.uploadImage(e.target.files[0]);
+               this.uploadImage(e.target.files[0])
 
                
           });
 
           document.querySelector('#post-btn').addEventListener("click",()=>{
                let captionText = document.querySelector("#post-caption-text").value;
+               this.postData.postID = `post${(Math. floor(Math. random() * 100))}`
                this.postData.caption = captionText
                this.UploadPost();
+               this.closeSection();
           });
 
-          document.querySelector(".post-btn").addEventListener("click",()=>{
-               let post = document.querySelector(".new-post-section");
+          document.querySelector("#update-btn").addEventListener("click",()=>{
+               
+               let captionText = document.querySelector("#post-caption-text").value;
+               this.postData.caption = captionText;
 
-               post.style.display = "block";
+               this.UploadPost();
+               this.closeSection();
+
+               
+               
+               
+               
+          })
+
+          document.querySelector(".post-btn").addEventListener("click",()=>{
+               this.newPost();
           });
 
           
@@ -137,15 +151,31 @@ class App{
                console.log(e.target);
 
                if(e.target.classList.contains("openEdit") & e.target.classList.contains(this.postData.userUID)){
+                    this.postData.postID = e.target.classList[2];
+                    this.postData.ImgUrl = e.target.classList[3];
+                    this.postData.imgFile = e.target.classList[4];
+
                     editBtn.style.display = "flex"
                     deleteBtn.style.display = "flex";
                     this.openEditSection();
                }
                else if(e.target.classList.contains("openEdit") & e.target.classList.contains(this.postData.userUID) === false){
+                    
                    editBtn.style.display = "none";
                    deleteBtn.style.display = "none";
 
                    this.openEditSection();
+
+                   
+               }
+
+               if(e.target.classList.contains("edit")){
+                    this.editPost();
+               }
+
+               if(e.target.classList.contains("delete")){
+                    this.deleteImg();
+                    this.closeSection();
                }
           })
           
@@ -192,7 +222,7 @@ class App{
      uploadImage(file){
           if(file){
                
-               console.log(file);
+               this.postData.imgFile = file.name;
 
                let storage = this.firebaseStorage.ref().child(file.name);
 
@@ -218,12 +248,11 @@ class App{
 
      UploadPost(){
           
-          this.postData.postID = `post${(Math. floor(Math. random() * 100))}`
 
           this.db.collection("posts").doc(this.postData.postID).set(this.postData)
            .then(() => {
                console.log("Document successfully written!");
-               this.loadPost();
+               this.RetrivePost();
            })
            .catch((error) => {
                console.error("Error writing document: ", error);
@@ -238,23 +267,28 @@ class App{
      }
      
      RetrivePost(){
-         
+
+
+         this.loadedPosts = [];
           this.db.collection("posts").get().then((querySnapshot) => {
                querySnapshot.forEach((doc) => {
                    // doc.data() is never undefined for query doc snapshots
                    this.loadedPosts.push(doc.data());
-            
+                    
                });
-               this.loadPost()
+               this.loadPost();
            });
 
             
 
      }
      loadPost(){
+     
+
        if(this.loadedPosts){
-        let postContainer = document.querySelector(".posts")
-        postContainer.innerHTML = ""
+
+          let postContainer = document.querySelector(".posts")
+          postContainer.innerHTML = null
 
         this.loadedPosts.forEach((item)=>{
 
@@ -278,7 +312,7 @@ class App{
                       class="Igw0E rBNOH YBx95 _4EzTm"
                       style="height: 24px; width: 24px"
                     >
-                      <svg class="openEdit ${item.userUID}"
+                      <svg class="openEdit ${item.userUID} ${item.postID} ${item.ImgUrl} ${item.imgFile}"
                         aria-label="More options"
                         class="_8-yf5"
                         fill="#262626"
@@ -415,6 +449,72 @@ class App{
 
         })
        }
+     }
+
+     editPost(){
+          if(this.loadedPosts){
+               this.loadedPosts.forEach((item)=>{
+                    if(item.postID === this.postData.postID){
+                         
+
+                         let postSection = document.querySelector(".new-post-section");
+                         let editSection = document.querySelector(".edit-section");
+                         let postContainer = document.querySelector(".post-container");
+                         postSection.style.display = "block";
+                         editSection.style.display = "none";
+
+                         console.log(postContainer.children);
+
+                         postContainer.children[0].style.display = "block";
+                         postContainer.children[0].src = item.ImgUrl;
+                         postContainer.children[1].style.display ="none";
+                         postContainer.children[4].textContent = item.caption;
+                         postContainer.children[5].value = item.caption;
+                         postContainer.children[7].style.display = "none";
+                         postContainer.children[8].style.display = "block";
+
+                    }
+               })
+          }
+     }
+
+     newPost(){
+                         let postSection = document.querySelector(".new-post-section");
+                         let editSection = document.querySelector(".edit-section");
+                         let postContainer = document.querySelector(".post-container");
+                         postSection.style.display = "block";
+                         editSection.style.display = "none";
+
+                         console.log(postContainer.children);
+
+                         postContainer.children[0].style.display = "none";
+                         postContainer.children[1].style.display = "block";
+                         postContainer.children[4].textContent = null;
+                         postContainer.children[5].value = null;
+                         postContainer.children[7].style.display = "block";
+                         postContainer.children[8].style.display = "none";
+     }
+
+     deleteImg(){
+          console.log(this.postData.postID)
+
+          let storage = this.firebaseStorage.ref().child(this.postData.imgFile);
+
+          storage.delete();
+
+          setTimeout(() => {
+               this.deletePost();
+          }, 3000);
+             
+     }
+
+     deletePost(){
+          this.db.collection("posts").doc(this.postData.postID).delete().then(() => {
+               console.log("Document successfully deleted!");
+               this.RetrivePost();
+           }).catch((error) => {
+               console.error("Error removing document: ", error);
+           });
      }
 
 }
