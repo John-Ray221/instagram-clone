@@ -2,7 +2,7 @@
 class App{
      constructor(){
           
-
+          //Firebase Configuration
           this.firebaseConfig = {
                apiKey: "AIzaSyB381WkgMHYyqyv5cEM6uwUEZWosNB-zBE",
                authDomain: "insta-clone-5f563.firebaseapp.com",
@@ -15,6 +15,7 @@ class App{
 
           firebase.initializeApp(this.firebaseConfig);
 
+          //This is the Post data object that will be uploaded and read from methods
           this.postData = {
                postID : "",
                displayName : "",
@@ -68,14 +69,10 @@ class App{
                          
                          
           
-                    },
-                    uiShown: function() {
-
-                        // this.appUI.style.display = "none";
                     }
                },
                signInOptions: [
-                    // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                     firebase.auth.EmailAuthProvider.PROVIDER_ID
                ] 
           };
@@ -85,16 +82,15 @@ class App{
 
      }
 
-     //Method to handel all the events
+     //Method to handel all the events on page
      handelEventListeners(){
 
 
           
-          let logOutBtn = document.querySelector(".logout-btn");
-          logOutBtn.addEventListener("click",()=>{
+           document.querySelector(".logout-btn").addEventListener("click",()=>{
                this.logout();
           });
-
+          
 
           document.querySelector('#files').addEventListener("change",(e)=>{
 
@@ -142,14 +138,15 @@ class App{
 
              
 
-          //debug
+      // Click event on body for the options to edit and delete a posts
           document.body.addEventListener("click",(e)=>{
+
+               //Selecting the edit and delete button
                let editBtn = document.querySelector(".edit");
                let deleteBtn = document.querySelector(".delete");
 
 
-               console.log(e.target);
-
+               //Check if the user is on that posted the post and that the options menu are clicked
                if(e.target.classList.contains("openEdit") & e.target.classList.contains(this.postData.userUID)){
                     this.postData.postID = e.target.classList[2];
                     this.postData.ImgUrl = e.target.classList[3];
@@ -157,22 +154,24 @@ class App{
 
                     editBtn.style.display = "flex"
                     deleteBtn.style.display = "flex";
-                    this.openEditSection();
+                    this.openOptionsModal();
                }
                else if(e.target.classList.contains("openEdit") & e.target.classList.contains(this.postData.userUID) === false){
-                    
+                    //If it is not the user that posted it hide the edit and delete button
                    editBtn.style.display = "none";
                    deleteBtn.style.display = "none";
 
-                   this.openEditSection();
+                   this.openOptionsModal();
 
                    
                }
 
+               //Check if the user click the edit button on options modal
                if(e.target.classList.contains("edit")){
                     this.editPost();
                }
 
+               //Check if the user click the delete button on options modal
                if(e.target.classList.contains("delete")){
                     this.deleteImg();
                     this.closeSection();
@@ -180,8 +179,8 @@ class App{
           })
           
      }
-
-     openEditSection(){
+     //Method to open the options modal
+     openOptionsModal(){
       let editSection = document.querySelector(".edit-section");
       
       editSection.style.display = "block"
@@ -189,7 +188,7 @@ class App{
 
 
      }
-
+     //Method to hide post section and options modal
      closeSection(){
       let editSection = document.querySelector(".edit-section");
       let postSection = document.querySelector(".new-post-section");
@@ -198,7 +197,7 @@ class App{
       postSection.style.display = "none";
      }
 
-
+     //Method to logout 
      logout(){
           this.firebaseAuth.signOut().then(() => {
                // Sign-out successful.
@@ -219,6 +218,7 @@ class App{
           
      }
 
+     //Method to upload image to the firebase storage
      uploadImage(file){
           if(file){
                
@@ -234,7 +234,8 @@ class App{
             
       }
      }
-
+     
+     //Method to get the url of the images from firebase storage to display images
      getURL(file){
 
           let storage = firebase.storage();
@@ -246,6 +247,7 @@ class App{
                })           
      }
 
+     //Method to upload the post object to the firebase store database
      UploadPost(){
           
 
@@ -266,6 +268,7 @@ class App{
           
      }
      
+     //Method to retrive the data from the firebase store database
      RetrivePost(){
 
 
@@ -282,6 +285,8 @@ class App{
             
 
      }
+
+     //Load the post to the webpage from the object 
      loadPost(){
      
 
@@ -451,6 +456,7 @@ class App{
        }
      }
 
+     //Method to display the data when users click on edit button
      editPost(){
           if(this.loadedPosts){
                this.loadedPosts.forEach((item)=>{
@@ -478,6 +484,7 @@ class App{
           }
      }
 
+     //Method to display Html when user want to create a new post
      newPost(){
                          let postSection = document.querySelector(".new-post-section");
                          let editSection = document.querySelector(".edit-section");
@@ -495,6 +502,7 @@ class App{
                          postContainer.children[8].style.display = "none";
      }
 
+     //Method to delete an image from the firebase storage
      deleteImg(){
           console.log(this.postData.postID)
 
@@ -508,6 +516,7 @@ class App{
              
      }
 
+     //Method to delete the post from the firebase database
      deletePost(){
           this.db.collection("posts").doc(this.postData.postID).delete().then(() => {
                console.log("Document successfully deleted!");
