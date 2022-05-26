@@ -7,8 +7,6 @@
 :root {
     --color-border: #dbdbdb;
 }
-<<<<<<< HEAD
-=======
 .App{
     display:none;
 }
@@ -115,7 +113,6 @@
 #update-btn{
     display:none
 }
->>>>>>> dev
 
 .main-container {
     height: 100vh;
